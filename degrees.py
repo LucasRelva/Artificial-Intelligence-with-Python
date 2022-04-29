@@ -107,34 +107,30 @@ def shortest_path(source, target):
         nodes_explored += 1
 
         if node.state == target:
-            return build_path(node)
+            actions = []
+            cells = []
+
+            while node.parent is not None:
+                actions.append(node.action)
+                cells.append(node.state)
+                node = node.parent
+
+            actions.reverse()
+            cells.reverse()
+
+            solution = []
+
+            for i in range(len(actions)):
+                solution.append((actions[i], cells[i]))
+
+            return solution
 
         visited.add(node.state)
 
         for movie, person in neighbors_for_person(node.state):
             if not frontier.contains_state(person) and person not in visited:
-                new_node = Node(state=person, parent=node.state, action=movie)
+                new_node = Node(state=person, parent=node, action=movie)
                 frontier.add(new_node)
-
-
-def build_path(node):
-    actions = []
-    cells = []
-
-    while node.parent is not None:
-        actions.append(node.action)
-        cells.append(node.state)
-        node = node.parent
-
-    actions.reverse()
-    cells.reverse()
-
-    solution = []
-
-    for i in range(len(actions)):
-        solution.append((actions[i], cells[i]))
-
-    return solution
 
 
 def person_id_for_name(name):
